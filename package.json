@@ -1,0 +1,12 @@
+{
+  "name": "goquorum-qbft-network",
+  "version": "1.0.0",
+  "description": "GoQuorum QBFT Network with HTTP RPC deployment",
+  "main": "deploy-http.js",
+  "scripts": {
+    "deploy": "node deploy-http.js"
+  },
+  "dependencies": {
+    "web3": "^1.9.0"
+  }
+}

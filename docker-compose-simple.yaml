@@ -1,0 +1,104 @@
+version: '3.6'
+
+x-quorum-def:
+  &quorum-def
+  restart: "on-failure"
+  image: quorumengineering/quorum:latest
+  expose:
+    - "21000"
+    - "50400"
+    - "8545"
+    - "8546"
+    - "8547"
+  healthcheck:
+    test: ["CMD", "wget", "--spider", "--proxy", "off", "http://localhost:8545"]
+    interval: 3s
+    timeout: 3s
+    retries: 10
+    start_period: 5s
+  environment:
+    - PRIVATE_CONFIG=ignore
+  entrypoint:
+    - /bin/sh
+    - -c
+    - |
+      # Initialize genesis block if not already initialized
+      if [ ! -d "/qdata/dd/geth/chaindata" ]; then
+        echo "Initializing genesis block..."
+        geth --datadir /qdata/dd init /qdata/dd/genesis.json
+      fi
+      
+      echo "Starting Quorum without private transaction support..."
+      PRIVATE_CONFIG=ignore geth --datadir /qdata/dd         --nodiscover         --allow-insecure-unlock         --verbosity 5         --istanbul.blockperiod 5         --syncmode full         --mine         --miner.threads 1         --ipcdisable         --http         --http.corsdomain "*"         --http.vhosts "*"         --http.addr 0.0.0.0         --http.port 8545         --http.api admin,eth,debug,miner,net,txpool,personal,web3,istanbul,quorumPermission,quorumExtension         --port 21000         --unlock 0         --password /qdata/passwords.txt
+
+services:
+  node-0:
+    << : *quorum-def
+    hostname: node-0
+    ports:
+      - "22000:8545"
+      - "21000:21000"
+    volumes:
+      - ./qdata/node-0:/qdata
+
+  node-1:
+    << : *quorum-def
+    hostname: node-1
+    ports:
+      - "22001:8545"
+      - "21001:21000"
+    volumes:
+      - ./qdata/node-1:/qdata
+
+  node-2:
+    << : *quorum-def
+    hostname: node-2
+    ports:
+      - "22002:8545"
+      - "21002:21000"
+    volumes:
+      - ./qdata/node-2:/qdata
+
+  node-3:
+    << : *quorum-def
+    hostname: node-3
+    ports:
+      - "22003:8545"
+      - "21003:21000"
+    volumes:
+      - ./qdata/node-3:/qdata
+
+  node-4:
+    << : *quorum-def
+    hostname: node-4
+    ports:
+      - "22004:8545"
+      - "21004:21000"
+    volumes:
+      - ./qdata/node-4:/qdata
+
+  explorer:
+    image: blockscout/blockscout:latest
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      ETHEREUM_JSONRPC_HTTP_URL: http://node-0:8545
+      DATABASE_URL: postgres://postgres:password@postgres:5432/blockscout
+      NETWORK: Quorum-QBFT
+    depends_on:
+      - postgres
+      - node-0
+
+  postgres:
+    image: postgres:13
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: blockscout
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
