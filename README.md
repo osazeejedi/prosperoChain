@@ -178,6 +178,31 @@ eth.sendTransaction({
 
 ## Troubleshooting
 
+### Blockscout Database Connection Issues
+
+If you encounter "too many connections" errors with the Blockscout PostgreSQL database:
+
+1. We've optimized the Blockscout configuration in `docker-compose.yaml` to reduce database connections:
+   - Reduced connection pool sizes
+   - Increased database timeouts
+   - Optimized indexer settings
+   - Disabled non-essential features
+
+2. Use the restart script to apply these optimizations:
+
+```bash
+chmod +x restart-network.sh
+./restart-network.sh
+```
+
+3. For more details on the optimizations, see the `BLOCKSCOUT_DB_OPTIMIZATION.md` file.
+
+4. Monitor database connections:
+
+```bash
+docker-compose logs -f explorer | grep -i 'database\|connection\|pool'
+```
+
 ### Docker Issues
 
 If you encounter Docker-related issues:
@@ -247,10 +272,14 @@ goquorum-qbft-network/
 ├── generate-configs.sh         # Script to generate node configurations
 ├── start-network.sh            # Script to start the network
 ├── start-network-simple.sh     # Script to start the simplified network
+├── restart-network.sh          # Script to restart the network with optimized settings
 ├── HelloWorld.sol              # Sample HelloWorld contract
 ├── SimpleStorage.sol           # Sample SimpleStorage contract
 ├── deploy-contract.js          # Script to deploy the HelloWorld contract
 ├── deploy-simple-storage.js    # Script to deploy the SimpleStorage contract
+├── deploy-http.js              # Script to deploy contract using HTTP RPC
+├── BLOCKSCOUT_DB_OPTIMIZATION.md # Documentation on Blockscout database optimizations
+├── HTTP_RPC_SOLUTION.md        # Documentation on HTTP RPC usage
 └── qdata/                      # Node data directories
     ├── node-0/                 # Data for node 0
     ├── node-1/                 # Data for node 1

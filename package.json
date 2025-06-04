@@ -7,6 +7,6 @@
     "deploy": "node deploy-http.js"
   },
   "dependencies": {
-    "web3": "^1.9.0"
+    "web3": "^1.10.4"
   }
 }
