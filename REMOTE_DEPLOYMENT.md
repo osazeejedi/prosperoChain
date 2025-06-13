@@ -77,7 +77,24 @@ Alternatively, you can manually verify by:
    docker-compose logs -f
    ```
 
-### 4. Troubleshooting Disk Space Issues
+### 4. Testing the RPC Endpoint
+
+To test if the RPC endpoint is accessible and functioning properly:
+
+```bash
+# Make the script executable (if not already)
+chmod +x test-rpc-endpoint.sh
+
+# Run the RPC testing script
+./test-rpc-endpoint.sh
+```
+
+This script will:
+- Test basic connectivity to the RPC endpoint
+- Check if basic JSON-RPC methods are working
+- Display the responses from the RPC endpoint
+
+### 5. Troubleshooting Disk Space Issues
 
 If you encounter disk space issues during deployment (e.g., "no space left on device" errors), you can use the cleanup script:
 
@@ -95,7 +112,25 @@ This script will:
 - Clean up system logs and temporary files
 - Display disk space before and after cleanup
 
-### 5. Lightweight Deployment Option
+### 6. Fixing `/run` Directory Issues
+
+If you encounter issues with the `/run` directory being full (100% usage), you can use the fix-run-directory script:
+
+```bash
+# Make the script executable (if not already)
+chmod +x fix-run-directory.sh
+
+# Run the fix script
+./fix-run-directory.sh
+```
+
+This script will:
+- Identify what's taking up space in the `/run` directory
+- Clean up Docker socket files and other large files
+- Restart the Docker service
+- Display the `/run` directory usage before and after cleanup
+
+### 7. Lightweight Deployment Option
 
 If disk space issues persist after cleanup, you can use the lightweight deployment option:
 
@@ -197,14 +232,24 @@ If you encounter "no space left on device" errors:
    ssh root@167.99.87.113 "df -h"
    ```
 
-2. Run the cleanup script:
+2. If the `/run` directory is full (100% usage):
+   ```bash
+   ./fix-run-directory.sh
+   ```
+
+3. Run the general cleanup script:
    ```bash
    ./cleanup-remote-server.sh
    ```
 
-3. If needed, switch to the lightweight deployment:
+4. If needed, switch to the lightweight deployment:
    ```bash
    ./deploy-lightweight-network.sh
+   ```
+
+5. Test if the RPC endpoint is accessible:
+   ```bash
+   ./test-rpc-endpoint.sh
    ```
 
 ### Contract Deployment Issues
