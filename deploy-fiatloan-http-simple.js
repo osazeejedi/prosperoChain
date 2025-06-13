@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Configuration
-const RPC_URL = 'http://localhost:22000'; // Node 0 HTTP RPC endpoint
+const RPC_URL = 'http://167.99.207.201:22000'; // Node 0 HTTP RPC endpoint
 const ACCOUNT_ADDRESS = ''; // Will be populated from the node
 const ACCOUNT_PASSWORD = ''; // Empty password as per your setup
 

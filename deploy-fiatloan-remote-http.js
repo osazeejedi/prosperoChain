@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Configuration
-const REMOTE_IP = '167.99.87.113';
+const REMOTE_IP = '167.99.207.201';
 const RPC_URL = `http://${REMOTE_IP}:22000`; // Remote Node 0 HTTP RPC endpoint
 const ACCOUNT_ADDRESS = ''; // Will be populated from the node
 const ACCOUNT_PASSWORD = ''; // Empty password as per your setup
